@@ -1,0 +1,20 @@
+{
+    "tables": {
+        "users": {
+            "columns": {
+                "id": "integer",
+                "name": "string"
+            },
+            "rows": [
+                {
+                    "id": 1,
+                    "name": "Dimitris"
+                },
+                {
+                    "id": 2,
+                    "name": "Mihaela"
+                }
+            ]
+        }
+    }
+}
