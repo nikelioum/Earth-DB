@@ -68,28 +68,13 @@ class QueryTables:
         else:
             columns = all_columns.keys()
 
-        # Apply conditions
+        # Apply condition
         if condition:
-            filtered_rows = []
-            for row in rows:
-                try:
-                    conditions = condition.split(" AND ")
-                    if any(" OR " in c for c in conditions):
-                        sub_conditions = condition.split(" OR ")
-                        if any(
-                            any(
-                                self.evaluate_condition(
-                                    row,
-                                    *self.parse_condition(sub_cond),
-                                    all_columns[self.parse_condition(sub_cond)[0]],
-                                )
-                                for sub_cond in sub_conditions
-                            )
-                            for _ in rows
-                        ):
-                            filtered_rows.append(row)
-                except ValueError:
-                    pass
+            key, op, value = self.parse_condition(condition)
+            if key not in all_columns:
+                return f"Error: Column '{key}' does not exist in table '{table_name}'."
+            col_type = all_columns[key]
+            rows = [row for row in rows if self.evaluate_condition(row, key, op, value, col_type)]
 
         # Sort rows
         if order_by:
