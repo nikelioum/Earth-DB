@@ -9,6 +9,7 @@ Welcome to **EarthDB CLI**, a command-line tool for managing and querying databa
 - Create and drop tables with specified column types.
 - Insert data into tables with type validation.
 - Query tables with support for conditions, sorting, and column-specific selection.
+- Delete data from tables with or without conditions.
 - Easy-to-use interface for managing your custom database.
 
 ---
@@ -169,7 +170,34 @@ Data inserted successfully into table 'users'.
 
 ---
 
-### 10. **SELECT FROM <name>**
+### 10. **DELETE FROM <name>**
+Deletes rows from a table in the selected database. You can specify a condition to delete specific rows or leave it blank to delete all rows.
+
+**Usage:**
+```bash
+DELETE FROM users
+Enter condition (or press Enter to delete all rows):
+Condition: id = 1
+```
+**Output:**
+```
+1 row(s) deleted from table 'users'.
+```
+
+**Delete All Rows:**
+```bash
+DELETE FROM users
+Enter condition (or press Enter to delete all rows):
+Condition: 
+```
+**Output:**
+```
+All rows deleted from table 'users'.
+```
+
+---
+
+### 11. **SELECT FROM <name>**
 Queries data from a table in the selected database. Supports conditions, sorting, and column-specific selection.
 
 **Usage:**
@@ -217,6 +245,11 @@ Enter values for the table columns, separated by commas.
 Values: 1, John Doe, 25.5, true
 Data inserted successfully into table 'users'.
 
+earthdb (testdb)> DELETE FROM users
+Enter condition (or press Enter to delete all rows):
+Condition: id = 1
+1 row(s) deleted from table 'users'.
+
 earthdb (testdb)> SELECT FROM users
 Enter columns to select (comma-separated or * for all):
 Columns: *
@@ -227,7 +260,6 @@ Order by: age
 Enter sort order (asc/desc):
 Sort order: asc
 id, name, age, is_active
-1, John Doe, 25.5, true
 
 earthdb (testdb)> EXIT
 Exiting EarthDB CLI. Goodbye!
@@ -237,7 +269,7 @@ Exiting EarthDB CLI. Goodbye!
 
 ## **Additional Notes**
 1. Ensure that column names and types are consistent when inserting or querying data.
-2. Conditions in `SELECT` support logical operators like `AND` and `OR`.
+2. Conditions in `SELECT` and `DELETE` support logical operators like `AND` and `OR`.
 3. Sorting allows you to order results by any column in ascending or descending order.
 
 ---

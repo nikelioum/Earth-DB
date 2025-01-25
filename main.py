@@ -1,5 +1,4 @@
 import os
-import sys
 from create_db import DatabaseManager
 from create_tables import TableManager
 from operation_tables import TableOperations
@@ -21,6 +20,9 @@ Available commands:
   INSERT INTO <name>     - Inserts data into a table in the selected database.
                            Example: INSERT INTO users
                                     Enter values: 1, John, 25.5, true
+  DELETE FROM <name>     - Deletes rows from a table in the selected database.
+                           Example: DELETE FROM users
+                                    Enter condition (or press Enter to delete all rows): id = 1
   SELECT FROM <name>     - Queries data from a table in the selected database.
                            Example: SELECT FROM users
                                     Enter condition (or press Enter for no condition): id=1
@@ -35,11 +37,9 @@ def main():
     selected_db = None
 
     print("Welcome to EarthDB CLI!")
-    print("Made by LIAROPOULOS DIMITRIS")
     print("Type 'help' for available commands.")
 
     while True:
-        # Display the current context in the prompt
         command = input(f"earthdb ({selected_db if selected_db else 'no database selected'})> ").strip()
 
         if command.lower() == "exit":
@@ -116,6 +116,18 @@ def main():
                     print(table_operations.insert_into_table(selected_db, table_name, values))
                 except ValueError:
                     print("Error: Invalid syntax. Usage: INSERT INTO <name>")
+        elif command.startswith("DELETE FROM"):
+            if not selected_db:
+                print("Error: No database selected. Use 'USE DATABASE <name>' first.")
+            else:
+                try:
+                    _, _, table_name = command.split(" ", 2)
+                    print("Enter condition (or press Enter to delete all rows):")
+                    condition = input("Condition: ").strip()
+                    condition = condition if condition else None
+                    print(table_operations.delete_from_table(selected_db, table_name, condition))
+                except ValueError:
+                    print("Error: Invalid syntax. Usage: DELETE FROM <name>")
         elif command.startswith("SELECT FROM"):
             if not selected_db:
                 print("Error: No database selected. Use 'USE DATABASE <name>' first.")
