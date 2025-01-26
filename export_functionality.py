@@ -3,8 +3,13 @@ import json
 import csv
 
 class ExportFunctionality:
-    def __init__(self, db_path="earthdb_data"):
+    def __init__(self, db_path="earthdb_data", export_path="exports"):
         self.db_path = db_path
+        self.export_path = export_path
+
+        # Ensure the export folder exists
+        if not os.path.exists(self.export_path):
+            os.makedirs(self.export_path)
 
     def load_database(self, db_name):
         """Load the JSON file of the specified database."""
@@ -27,13 +32,16 @@ class ExportFunctionality:
         if not rows:
             return f"Error: Table '{table_name}' is empty!"
 
+        # Ensure the output file is in the exports folder
+        output_path = os.path.join(self.export_path, output_file)
+
         # Write to CSV
-        with open(output_file, "w", newline="") as csvfile:
+        with open(output_path, "w", newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=columns)
             writer.writeheader()
             writer.writerows(rows)
 
-        return f"Table '{table_name}' exported successfully to '{output_file}'."
+        return f"Table '{table_name}' exported successfully to '{output_path}'."
 
     def export_table_to_json(self, db_name, table_name, output_file):
         """Export a specific table to a JSON file."""
@@ -43,21 +51,27 @@ class ExportFunctionality:
 
         table = db_data["tables"][table_name]
 
+        # Ensure the output file is in the exports folder
+        output_path = os.path.join(self.export_path, output_file)
+
         # Write to JSON
-        with open(output_file, "w") as jsonfile:
+        with open(output_path, "w") as jsonfile:
             json.dump(table, jsonfile, indent=4)
 
-        return f"Table '{table_name}' exported successfully to '{output_file}'."
+        return f"Table '{table_name}' exported successfully to '{output_path}'."
 
     def export_database_to_json(self, db_name, output_file):
         """Export the entire database to a JSON file."""
         db_data, _ = self.load_database(db_name)
 
+        # Ensure the output file is in the exports folder
+        output_path = os.path.join(self.export_path, output_file)
+
         # Write to JSON
-        with open(output_file, "w") as jsonfile:
+        with open(output_path, "w") as jsonfile:
             json.dump(db_data, jsonfile, indent=4)
 
-        return f"Database '{db_name}' exported successfully to '{output_file}'."
+        return f"Database '{db_name}' exported successfully to '{output_path}'."
 
     def import_table_from_json(self, db_name, table_name, input_file):
         """Import a table from a JSON file."""
