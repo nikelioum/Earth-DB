@@ -3,6 +3,7 @@ from create_db import DatabaseManager
 from create_tables import TableManager
 from operation_tables import TableOperations
 from query_tables import QueryTables
+from export_functionality import ExportFunctionality  # Import the export functionality module
 
 def print_help():
     print("""
@@ -30,6 +31,12 @@ Available commands:
   SELECT FROM <name>     - Queries data from a table in the selected database.
                            Example: SELECT FROM users
                                     Enter condition (or press Enter for no condition): id=1
+  EXPORT TABLE <name> TO <format> - Exports a table to JSON or CSV.
+                                    Example: EXPORT TABLE users TO csv
+  EXPORT DATABASE <name> TO JSON  - Exports the entire database to a JSON file.
+                                    Example: EXPORT DATABASE testdb TO backup.json
+  IMPORT TABLE <name> FROM <file> - Imports a table from a JSON or CSV file.
+                                    Example: IMPORT TABLE users FROM data.json
   EXIT                   - Exits the CLI.
     """)
 
@@ -38,6 +45,7 @@ def main():
     table_manager = TableManager()
     table_operations = TableOperations()
     query_tables = QueryTables()
+    export_functionality = ExportFunctionality()
     selected_db = None
 
     print("Welcome to EarthDB CLI!")
@@ -173,6 +181,46 @@ def main():
                     )
                 except ValueError:
                     print("Error: Invalid syntax. Usage: SELECT FROM <name>")
+        elif command.startswith("EXPORT TABLE"):
+            if not selected_db:
+                print("Error: No database selected. Use 'USE DATABASE <name>' first.")
+            else:
+                try:
+                    _, _, table_name, _, format_type = command.split(" ", 4)
+                    output_file = input("Enter output file name (with extension): ").strip()
+                    if format_type.lower() == "csv":
+                        print(export_functionality.export_table_to_csv(selected_db, table_name, output_file))
+                    elif format_type.lower() == "json":
+                        print(export_functionality.export_table_to_json(selected_db, table_name, output_file))
+                    else:
+                        print("Error: Unsupported format. Use 'csv' or 'json'.")
+                except ValueError:
+                    print("Error: Invalid syntax. Usage: EXPORT TABLE <name> TO <format>")
+        elif command.startswith("EXPORT DATABASE"):
+            try:
+                _, _, db_name, _, file_format = command.split(" ", 4)
+                if file_format.lower() != "json":
+                    print("Error: Only JSON format is supported for database export.")
+                else:
+                    output_file = input("Enter output file name (with .json extension): ").strip()
+                    print(export_functionality.export_database_to_json(db_name, output_file))
+            except ValueError:
+                print("Error: Invalid syntax. Usage: EXPORT DATABASE <name> TO JSON")
+        elif command.startswith("IMPORT TABLE"):
+            if not selected_db:
+                print("Error: No database selected. Use 'USE DATABASE <name>' first.")
+            else:
+                try:
+                    _, _, table_name, _, file_path = command.split(" ", 4)
+                    file_type = file_path.split(".")[-1].lower()
+                    if file_type == "json":
+                        print(export_functionality.import_table_from_json(selected_db, table_name, file_path))
+                    elif file_type == "csv":
+                        print(export_functionality.import_table_from_csv(selected_db, table_name, file_path))
+                    else:
+                        print("Error: Unsupported file type. Use '.json' or '.csv'.")
+                except ValueError:
+                    print("Error: Invalid syntax. Usage: IMPORT TABLE <name> FROM <file>")
         else:
             print("Error: Unknown command. Type 'help' for available commands.")
 

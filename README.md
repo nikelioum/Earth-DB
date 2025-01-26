@@ -11,6 +11,8 @@ Welcome to **EarthDB CLI**, a command-line tool for managing and querying databa
 - Query tables with support for conditions, sorting, and column-specific selection.
 - Delete data from tables with or without conditions.
 - Update data in tables with specified conditions.
+- Export tables or databases to JSON/CSV.
+- Import tables from JSON/CSV files.
 - Easy-to-use interface for managing your custom database.
 
 ---
@@ -189,7 +191,7 @@ Condition: id = 1
 ```bash
 DELETE FROM users
 Enter condition (or press Enter to delete all rows):
-Condition: 
+Condition:
 ```
 **Output:**
 ```
@@ -220,7 +222,7 @@ UPDATE users
 Enter updates in the format 'column=value', separated by commas:
 Updates: is_active=false
 Enter condition (or press Enter to update all rows):
-Condition: 
+Condition:
 ```
 **Output:**
 ```
@@ -248,6 +250,69 @@ Sort order: desc
 ```
 id, name
 1, John Doe
+```
+
+---
+
+### 13. **EXPORT TABLE <name> TO <format>**
+Exports a table to a file in the specified format (JSON or CSV).
+
+**Usage:**
+```bash
+EXPORT TABLE users TO csv
+Enter output file name (with extension): users_backup.csv
+```
+**Output:**
+```
+Table 'users' exported successfully to 'users_backup.csv'.
+```
+
+**Export to JSON:**
+```bash
+EXPORT TABLE users TO json
+Enter output file name (with extension): users_backup.json
+```
+**Output:**
+```
+Table 'users' exported successfully to 'users_backup.json'.
+```
+
+---
+
+### 14. **EXPORT DATABASE <name> TO JSON**
+Exports the entire database to a JSON file.
+
+**Usage:**
+```bash
+EXPORT DATABASE testdb TO json
+Enter output file name (with extension): testdb_backup.json
+```
+**Output:**
+```
+Database 'testdb' exported successfully to 'testdb_backup.json'.
+```
+
+---
+
+### 15. **IMPORT TABLE <name> FROM <file>**
+Imports a table from a JSON or CSV file.
+
+**Usage:**
+```bash
+IMPORT TABLE users FROM users_backup.json
+```
+**Output:**
+```
+Table 'users' imported successfully from 'users_backup.json'.
+```
+
+**Import from CSV:**
+```bash
+IMPORT TABLE users FROM users_backup.csv
+```
+**Output:**
+```
+Table 'users' imported successfully from 'users_backup.csv'.
 ```
 
 ---
@@ -289,16 +354,9 @@ Enter condition (or press Enter to delete all rows):
 Condition: id = 1
 1 row(s) deleted from table 'users'.
 
-earthdb (testdb)> SELECT FROM users
-Enter columns to select (comma-separated or * for all):
-Columns: *
-Enter condition (or press Enter for no condition):
-Condition: age > 20
-Enter column to sort by (or press Enter for no sorting):
-Order by: age
-Enter sort order (asc/desc):
-Sort order: asc
-id, name, age, is_active
+earthdb (testdb)> EXPORT TABLE users TO csv
+Enter output file name (with extension): users_backup.csv
+Table 'users' exported successfully to 'users_backup.csv'.
 
 earthdb (testdb)> EXIT
 Exiting EarthDB CLI. Goodbye!
@@ -310,6 +368,7 @@ Exiting EarthDB CLI. Goodbye!
 1. Ensure that column names and types are consistent when inserting, updating, or querying data.
 2. Conditions in `SELECT`, `DELETE`, and `UPDATE` support logical operators like `AND` and `OR`.
 3. Sorting allows you to order results by any column in ascending or descending order.
+4. Exported files (JSON/CSV) can be re-imported into the database.
 
 ---
 
