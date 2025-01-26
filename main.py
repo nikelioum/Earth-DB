@@ -23,6 +23,10 @@ Available commands:
   DELETE FROM <name>     - Deletes rows from a table in the selected database.
                            Example: DELETE FROM users
                                     Enter condition (or press Enter to delete all rows): id = 1
+  UPDATE <name>          - Updates rows in a table in the selected database.
+                           Example: UPDATE users
+                                    Enter updates: name="John", age=30
+                                    Enter condition (or press Enter to update all rows): id=1
   SELECT FROM <name>     - Queries data from a table in the selected database.
                            Example: SELECT FROM users
                                     Enter condition (or press Enter for no condition): id=1
@@ -116,6 +120,20 @@ def main():
                     print(table_operations.insert_into_table(selected_db, table_name, values))
                 except ValueError:
                     print("Error: Invalid syntax. Usage: INSERT INTO <name>")
+        elif command.startswith("UPDATE"):
+            if not selected_db:
+                print("Error: No database selected. Use 'USE DATABASE <name>' first.")
+            else:
+                try:
+                    _, table_name = command.split(" ", 1)
+                    print("Enter updates in the format 'column=value', separated by commas:")
+                    updates = input("Updates: ").strip()
+                    print("Enter condition (or press Enter to update all rows):")
+                    condition = input("Condition: ").strip()
+                    condition = condition if condition else None
+                    print(table_operations.update_table(selected_db, table_name, updates, condition))
+                except ValueError:
+                    print("Error: Invalid syntax. Usage: UPDATE <table>")
         elif command.startswith("DELETE FROM"):
             if not selected_db:
                 print("Error: No database selected. Use 'USE DATABASE <name>' first.")

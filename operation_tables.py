@@ -90,3 +90,66 @@ class TableOperations:
         deleted_row_count = original_row_count - len(table["rows"])
         self.save_database(db_data, db_file)
         return f"{deleted_row_count} row(s) deleted from table '{table_name}'."
+
+
+    def update_table(self, db_name, table_name, updates, condition=None):
+        """Update rows in a specified table based on a condition."""
+        db_data, db_file = self.load_database(db_name)
+        if table_name not in db_data["tables"]:
+            return f"Error: Table '{table_name}' does not exist in database '{db_name}'!"
+
+        table = db_data["tables"][table_name]
+        rows = table["rows"]
+        columns = table["columns"]
+
+        if not rows:
+            return f"No data found in table '{table_name}' to update."
+
+        # Parse updates
+        updates = [update.strip() for update in updates.split(",")]
+        update_map = {}
+        for update in updates:
+            try:
+                column, value = update.split("=", 1)
+                column = column.strip()
+                value = value.strip()
+                if column not in columns:
+                    return f"Error: Column '{column}' does not exist in table '{table_name}'."
+                col_type = columns[column]
+
+                # Convert the value to the appropriate type
+                if col_type == "integer":
+                    value = int(value)
+                elif col_type == "float":
+                    value = float(value)
+                elif col_type == "boolean":
+                    value = value.lower() in ["true", "1"]
+                elif col_type == "string":
+                    value = str(value)
+                update_map[column] = value
+            except ValueError:
+                return f"Error: Invalid update format '{update}'. Use 'column=value'."
+
+        # Parse and apply the condition
+        if condition:
+            key, op, value = QueryTables().parse_condition(condition)
+            if key not in columns:
+                return f"Error: Column '{key}' does not exist in table '{table_name}'."
+            col_type = columns[key]
+            rows_to_update = [
+                row for row in rows
+                if QueryTables().evaluate_condition(row, key, op, value, col_type)
+            ]
+        else:
+            rows_to_update = rows  # If no condition, update all rows
+
+        # Apply updates
+        updated_count = 0
+        for row in rows_to_update:
+            for column, new_value in update_map.items():
+                row[column] = new_value
+            updated_count += 1
+
+        # Save the updated database
+        self.save_database(db_data, db_file)
+        return f"{updated_count} row(s) updated in table '{table_name}'."

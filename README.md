@@ -10,6 +10,7 @@ Welcome to **EarthDB CLI**, a command-line tool for managing and querying databa
 - Insert data into tables with type validation.
 - Query tables with support for conditions, sorting, and column-specific selection.
 - Delete data from tables with or without conditions.
+- Update data in tables with specified conditions.
 - Easy-to-use interface for managing your custom database.
 
 ---
@@ -197,7 +198,38 @@ All rows deleted from table 'users'.
 
 ---
 
-### 11. **SELECT FROM <name>**
+### 11. **UPDATE <name>**
+Updates rows in a table in the selected database. You can specify which columns to update and the condition to match rows.
+
+**Usage:**
+```bash
+UPDATE users
+Enter updates in the format 'column=value', separated by commas:
+Updates: name="John Doe", age=30
+Enter condition (or press Enter to update all rows):
+Condition: id = 1
+```
+**Output:**
+```
+1 row(s) updated in table 'users'.
+```
+
+**Update All Rows:**
+```bash
+UPDATE users
+Enter updates in the format 'column=value', separated by commas:
+Updates: is_active=false
+Enter condition (or press Enter to update all rows):
+Condition: 
+```
+**Output:**
+```
+3 row(s) updated in table 'users'.
+```
+
+---
+
+### 12. **SELECT FROM <name>**
 Queries data from a table in the selected database. Supports conditions, sorting, and column-specific selection.
 
 **Usage:**
@@ -245,6 +277,13 @@ Enter values for the table columns, separated by commas.
 Values: 1, John Doe, 25.5, true
 Data inserted successfully into table 'users'.
 
+earthdb (testdb)> UPDATE users
+Enter updates in the format 'column=value', separated by commas:
+Updates: name="Dimitris", age=30
+Enter condition (or press Enter to update all rows):
+Condition: id = 1
+1 row(s) updated in table 'users'.
+
 earthdb (testdb)> DELETE FROM users
 Enter condition (or press Enter to delete all rows):
 Condition: id = 1
@@ -268,8 +307,8 @@ Exiting EarthDB CLI. Goodbye!
 ---
 
 ## **Additional Notes**
-1. Ensure that column names and types are consistent when inserting or querying data.
-2. Conditions in `SELECT` and `DELETE` support logical operators like `AND` and `OR`.
+1. Ensure that column names and types are consistent when inserting, updating, or querying data.
+2. Conditions in `SELECT`, `DELETE`, and `UPDATE` support logical operators like `AND` and `OR`.
 3. Sorting allows you to order results by any column in ascending or descending order.
 
 ---
