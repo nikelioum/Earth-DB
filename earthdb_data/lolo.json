@@ -9,20 +9,10 @@
                 {
                     "id": 1,
                     "name": "george"
-                }
-            ]
-        },
-        "customers": {
-            "columns": {
-                "id": "integer",
-                "name": "string",
-                "email": "string"
-            },
-            "rows": [
+                },
                 {
-                    "id": 1,
-                    "name": "dimitris",
-                    "email": "dimliarop@gmail.com"
+                    "id": 10,
+                    "name": "ggg"
                 }
             ]
         }
